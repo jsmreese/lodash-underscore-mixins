@@ -19,7 +19,8 @@ changes in the return value of the given function.
 collate accepts an array of propertyNames (which may contain mixed numbers, strings, or functions) 
 for easy multi-level collation in a single call.
 
-### Array of objects
+### Example usage
+#### Array of objects
 	
 ```js
 var cities = [
@@ -62,7 +63,7 @@ var collatedCities = _.collate(cities,
 ]
 ```
 	
-### Array of arrays
+#### Array of arrays
 
 ```js
 var data = [
@@ -152,4 +153,81 @@ var collatedData = _.collate(data, [
 		]
 	]
 ]
+```
+
+## _.delegator(cases, defaultCaseKey [, thisArg])
+_delegator returns a function object that acts as a delegator for method look-up.
+The delegator function object is intended to be used as **a configurable replacement for switch statements**._
+
+_delegator is inspired by and substantially copied from https://github.com/rwldrn/idiomatic.js/_
+
+The returned delegator function uses its first argument as the case key.
+All other arguments passed to the delegator function are passed directly through to the delegate method.
+
+cases must be an object containing method functions.
+defaultCaseKey is the name of the key containing the default method, which will be used when no case key is provided, or when the provided case key cannot be found in the cases object.
+thisArg is an optional "this" argument to be used as the context for case method evaluation.
+
+The delegator function object has three getter/setter methods to access the private cases:
+```js
+// getters
+.cases()
+.defaultCaseKey()
+.thisArg()
+
+// setters
+.cases(obj)
+.defaultCaseKey(key)
+.thisArg(obj)
+```
+
+The delegator function object has two utility methods for manipulating the cases object:
+```js
+.hasCase(caseKey)
+.extendCases(obj)
+```
+
+### Example usage
+```js
+// set up delegator function
+var delegator = _.delegator({
+	"A": function () {
+		var args = [].slice.call(arguments);
+		return "A:" + args.join(",");
+	},
+	"B": function () {
+		var args = [].slice.call(arguments);
+		return "B:" + args.join(",");
+	}
+}, "A");
+
+// call delegator function with no arguments
+delegator();
+=> "A:"
+
+// call delegator function with arguments
+delegator("B", 0, 1, 2, 3);
+=> "B:0,1,2,3"
+
+// call delegator function with a case key that is not in the cases object
+delegator("C", 0, 1, 2, 3);
+=> "A:0,1,2,3"
+
+// check to see if a case exists
+delegator.hasCase("C");
+=> false
+
+// add a new case
+delegator.extendCases({ "C": function () { return "CASE C"; } });
+
+// check the defaultCaseKey
+delegator.defaultCaseKey();
+=> "A"
+
+// set the defaultCaseKey
+delegator.defaultCaseKey("C");
+
+// call delegator function with no arguments
+delegator();
+=> "CASE C"
 ```
