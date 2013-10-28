@@ -3,7 +3,7 @@ $(document).ready(function() {
 	// tests
 	module('Prune');
 
-	test("remove properties with empty string values", function () {
+	test("remove properties with empty string and object values", function () {
 		deepEqual(_.prune({
 			a: "",
 			b: 123,
@@ -29,7 +29,6 @@ $(document).ready(function() {
 			f: NaN,
 			g: true,
 			h: false,
-			i: {},
 			j: [],
 			k: "string",
 			m: {
